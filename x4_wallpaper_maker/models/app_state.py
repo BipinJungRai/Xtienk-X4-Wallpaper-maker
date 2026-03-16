@@ -67,6 +67,7 @@ class SessionState:
     source_image_rgb: Any | None = None
     display_image_rgb: Any | None = None
     prepared_base_480x800_rgb: Any | None = None
+    source_image_stem: str | None = None
     crop_draft: CropDraftState = field(default_factory=CropDraftState)
     confirmed_crop_box: tuple[float, float, float, float] | None = None
     preview_settings: PreviewSettings = field(default_factory=PreviewSettings)

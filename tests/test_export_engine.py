@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from x4_wallpaper_maker.core.export_engine import build_target_path, export_bmp
+from x4_wallpaper_maker.core.export_engine import build_target_path, export_bmp, normalize_export_filename
 from x4_wallpaper_maker.models.app_state import ExportMode, ExportRequest, SleepFolderVariant
 
 
@@ -50,10 +50,13 @@ def test_custom_export_appends_bmp_suffix_when_missing(tmp_path: Path) -> None:
     assert build_target_path(request) == tmp_path / "named-output.bmp"
 
 
+def test_normalize_export_filename_appends_bmp_suffix() -> None:
+    assert normalize_export_filename("holiday-photo") == "holiday-photo.bmp"
+
+
 def test_export_refuses_to_overwrite_without_confirmation(tmp_path: Path) -> None:
     target = tmp_path / "sleep.bmp"
     _bitmap().save(target, format="BMP")
     request = ExportRequest(mode=ExportMode.ROOT_SLEEP, target_directory=tmp_path, overwrite=False)
     with pytest.raises(FileExistsError):
         export_bmp(_bitmap(), request)
-

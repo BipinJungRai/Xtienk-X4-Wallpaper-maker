@@ -104,33 +104,36 @@ class CropCanvas(QWidget):
 
     def paintEvent(self, _event) -> None:
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.fillRect(self.rect(), QColor("#efe6d6"))
+        try:
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.fillRect(self.rect(), QColor("#efe6d6"))
 
-        crop_rect = crop_engine.compute_crop_rect(self.width(), self.height())
-        if self._pixmap is not None and self._image_size is not None:
-            target_x = self._draft.offset_x
-            target_y = self._draft.offset_y
-            target_w = self._image_size[0] * self._draft.scale
-            target_h = self._image_size[1] * self._draft.scale
-            painter.drawPixmap(int(round(target_x)), int(round(target_y)), int(round(target_w)), int(round(target_h)), self._pixmap)
+            crop_rect = crop_engine.compute_crop_rect(self.width(), self.height())
+            if self._pixmap is not None and self._image_size is not None:
+                target_x = self._draft.offset_x
+                target_y = self._draft.offset_y
+                target_w = self._image_size[0] * self._draft.scale
+                target_h = self._image_size[1] * self._draft.scale
+                painter.drawPixmap(int(round(target_x)), int(round(target_y)), int(round(target_w)), int(round(target_h)), self._pixmap)
 
-        overlay_path = QPainterPath()
-        overlay_path.addRect(float(self.rect().x()), float(self.rect().y()), float(self.rect().width()), float(self.rect().height()))
-        hole_path = QPainterPath()
-        hole_path.addRoundedRect(crop_rect.x, crop_rect.y, crop_rect.width, crop_rect.height, 18, 18)
-        painter.fillPath(overlay_path.subtracted(hole_path), QColor(0, 0, 0, 110))
+            overlay_path = QPainterPath()
+            overlay_path.addRect(float(self.rect().x()), float(self.rect().y()), float(self.rect().width()), float(self.rect().height()))
+            hole_path = QPainterPath()
+            hole_path.addRoundedRect(crop_rect.x, crop_rect.y, crop_rect.width, crop_rect.height, 18, 18)
+            painter.fillPath(overlay_path.subtracted(hole_path), QColor(0, 0, 0, 110))
 
-        border_pen = QPen(QColor("#fff8ef"))
-        border_pen.setWidth(3)
-        painter.setPen(border_pen)
-        painter.drawRoundedRect(crop_rect.x, crop_rect.y, crop_rect.width, crop_rect.height, 18, 18)
+            border_pen = QPen(QColor("#fff8ef"))
+            border_pen.setWidth(3)
+            painter.setPen(border_pen)
+            painter.drawRoundedRect(crop_rect.x, crop_rect.y, crop_rect.width, crop_rect.height, 18, 18)
 
-        guide_pen = QPen(QColor(255, 255, 255, 90))
-        guide_pen.setWidth(1)
-        painter.setPen(guide_pen)
-        painter.drawLine(crop_rect.x, crop_rect.y + (crop_rect.height / 2.0), crop_rect.right, crop_rect.y + (crop_rect.height / 2.0))
-        painter.drawLine(crop_rect.x + (crop_rect.width / 2.0), crop_rect.y, crop_rect.x + (crop_rect.width / 2.0), crop_rect.bottom)
+            guide_pen = QPen(QColor(255, 255, 255, 90))
+            guide_pen.setWidth(1)
+            painter.setPen(guide_pen)
+            painter.drawLine(crop_rect.x, crop_rect.y + (crop_rect.height / 2.0), crop_rect.right, crop_rect.y + (crop_rect.height / 2.0))
+            painter.drawLine(crop_rect.x + (crop_rect.width / 2.0), crop_rect.y, crop_rect.x + (crop_rect.width / 2.0), crop_rect.bottom)
+        finally:
+            painter.end()
 
 
 class CropView(QWidget):

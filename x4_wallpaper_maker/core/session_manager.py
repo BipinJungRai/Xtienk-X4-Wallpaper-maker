@@ -10,6 +10,7 @@ from PIL import Image
 from x4_wallpaper_maker.core import crop_engine, export_engine, image_loader, render_engine
 from x4_wallpaper_maker.core.privacy_manager import PrivacyManager
 from x4_wallpaper_maker.models.app_state import AppStage, CropDraftState, ExportRequest, PreviewSettings, RenderMode, SessionState
+from x4_wallpaper_maker.utils.constants import DEFAULT_EXPORT_FILENAME
 
 
 def _pil_to_qimage(image: Image.Image):
@@ -36,9 +37,11 @@ class SessionManager:
 
     def import_source(self, path: str | Path) -> SessionState:
         self.clear_session()
+        source_path = Path(path)
         source_image, display_image, notice = image_loader.load_source_image(path)
         self.state.source_image_rgb = source_image
         self.state.display_image_rgb = display_image
+        self.state.source_image_stem = source_path.stem or Path(DEFAULT_EXPORT_FILENAME).stem
         self.state.stage = AppStage.CROP
         self.state.crop_draft = CropDraftState()
         self.state.preview_settings = PreviewSettings(mode=RenderMode.STANDARD)
@@ -145,6 +148,11 @@ class SessionManager:
     def shutdown_cleanup(self) -> None:
         self.privacy_manager.shutdown_cleanup(self.state)
         self.state = SessionState()
+
+    def default_export_path(self, downloads_dir: Path | None = None) -> Path:
+        export_root = downloads_dir or (Path.home() / "Downloads")
+        export_name = export_engine.normalize_export_filename(self.state.source_image_stem)
+        return export_root / export_name
 
     def _refresh_preview_image(self) -> None:
         if self.state.prepared_base_480x800_rgb is None:

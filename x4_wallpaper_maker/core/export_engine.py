@@ -15,7 +15,7 @@ from x4_wallpaper_maker.utils.constants import (
 )
 
 
-def _normalize_filename(file_name: str | None) -> str:
+def normalize_export_filename(file_name: str | None) -> str:
     candidate = (file_name or DEFAULT_EXPORT_FILENAME).strip()
     if not candidate:
         candidate = DEFAULT_EXPORT_FILENAME
@@ -42,7 +42,7 @@ def build_target_path(request: ExportRequest) -> Path:
 
     folder_name = DOT_SLEEP_DIRECTORY if request.folder_variant == SleepFolderVariant.DOT_SLEEP else SLEEP_DIRECTORY
     export_dir = request.target_directory / folder_name
-    return export_dir / _normalize_filename(request.file_name)
+    return export_dir / normalize_export_filename(request.file_name)
 
 
 def export_bmp(image: Image.Image, request: ExportRequest) -> Path:
@@ -52,4 +52,3 @@ def export_bmp(image: Image.Image, request: ExportRequest) -> Path:
         raise FileExistsError("Refusing to overwrite an existing file without confirmation.")
     image.save(target_path, format="BMP")
     return target_path
-

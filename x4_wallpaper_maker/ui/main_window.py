@@ -7,9 +7,8 @@ from pathlib import Path
 
 from x4_wallpaper_maker.core.session_manager import SessionManager
 from x4_wallpaper_maker.core.privacy_manager import PrivacyManager
-from x4_wallpaper_maker.models.app_state import AppStage, PreviewSettings
+from x4_wallpaper_maker.models.app_state import AppStage, ExportMode, ExportRequest, PreviewSettings
 from x4_wallpaper_maker.ui.crop_view import CropView
-from x4_wallpaper_maker.ui.export_dialog import ExportDialog
 from x4_wallpaper_maker.ui.import_view import ImportView
 from x4_wallpaper_maker.ui.preview_view import PreviewView
 from x4_wallpaper_maker.utils.constants import (
@@ -284,14 +283,10 @@ class MainWindow(QMainWindow):
         self._update_controls()
 
     def _show_export_dialog(self) -> None:
-        dialog = ExportDialog(self)
-        if dialog.exec() == 0:
-            return
-
-        request = dialog.export_request()
-        if request is None:
-            self._show_generic_error("Choose a destination before exporting.")
-            return
+        request = ExportRequest(
+            mode=ExportMode.CUSTOM,
+            custom_path=self.session.default_export_path(),
+        )
 
         try:
             exported_path = self.session.export(request)
@@ -310,7 +305,7 @@ class MainWindow(QMainWindow):
             self._show_generic_error("Export failed.")
             return
 
-        QMessageBox.information(self, "Export complete", f"Exported BMP to:\n{exported_path}")
+        QMessageBox.information(self, "Export complete", f"Exported BMP to Downloads:\n{exported_path}")
 
     def _confirm_overwrite(self) -> bool:
         answer = QMessageBox.question(

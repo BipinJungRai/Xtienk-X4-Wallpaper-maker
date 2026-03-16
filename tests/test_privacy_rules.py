@@ -76,6 +76,19 @@ def test_logging_omits_source_path(tmp_path: Path) -> None:
     assert str(source_path) not in stream.getvalue()
 
 
+def test_default_export_path_uses_source_name_and_downloads_folder(tmp_path: Path) -> None:
+    source_path = tmp_path / "secret family photo.png"
+    _create_source_image(source_path)
+
+    session = SessionManager(PrivacyManager())
+    session.privacy_manager.configure_logging()
+    session.import_source(source_path)
+
+    export_path = session.default_export_path(tmp_path / "Downloads")
+
+    assert export_path == tmp_path / "Downloads" / "secret family photo.bmp"
+
+
 def test_clear_session_resets_state() -> None:
     stateful_session = SessionManager(PrivacyManager())
     stateful_session.state.stage = AppStage.PREVIEW

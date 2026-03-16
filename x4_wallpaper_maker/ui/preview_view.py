@@ -32,34 +32,37 @@ class DevicePreviewWidget(QWidget):
 
     def paintEvent(self, _event) -> None:
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.fillRect(self.rect(), QColor("#efe6d6"))
+        try:
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.fillRect(self.rect(), QColor("#efe6d6"))
 
-        outer_margin = 36
-        outer_rect = self.rect().adjusted(outer_margin, outer_margin, -outer_margin, -outer_margin)
-        painter.setBrush(QColor("#d7d0c5"))
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.drawRoundedRect(outer_rect, 34, 34)
+            outer_margin = 36
+            outer_rect = self.rect().adjusted(outer_margin, outer_margin, -outer_margin, -outer_margin)
+            painter.setBrush(QColor("#d7d0c5"))
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.drawRoundedRect(outer_rect, 34, 34)
 
-        inner_margin_x = 48
-        inner_margin_y = 58
-        screen_rect = outer_rect.adjusted(inner_margin_x, inner_margin_y, -inner_margin_x, -inner_margin_y)
-        painter.setBrush(QColor("#f2eee8"))
-        painter.drawRoundedRect(screen_rect, 18, 18)
+            inner_margin_x = 48
+            inner_margin_y = 58
+            screen_rect = outer_rect.adjusted(inner_margin_x, inner_margin_y, -inner_margin_x, -inner_margin_y)
+            painter.setBrush(QColor("#f2eee8"))
+            painter.drawRoundedRect(screen_rect, 18, 18)
 
-        if self._pixmap is not None:
-            scaled = self._pixmap.scaled(
-                screen_rect.size().toSize(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-            x = screen_rect.x() + ((screen_rect.width() - scaled.width()) / 2)
-            y = screen_rect.y() + ((screen_rect.height() - scaled.height()) / 2)
-            clip_path = QPainterPath()
-            clip_path.addRoundedRect(screen_rect, 18, 18)
-            painter.setClipPath(clip_path)
-            painter.drawPixmap(int(round(x)), int(round(y)), scaled)
-            painter.setClipping(False)
+            if self._pixmap is not None:
+                scaled = self._pixmap.scaled(
+                    screen_rect.size(),
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+                x = screen_rect.x() + ((screen_rect.width() - scaled.width()) / 2)
+                y = screen_rect.y() + ((screen_rect.height() - scaled.height()) / 2)
+                clip_path = QPainterPath()
+                clip_path.addRoundedRect(screen_rect, 18, 18)
+                painter.setClipPath(clip_path)
+                painter.drawPixmap(int(round(x)), int(round(y)), scaled)
+                painter.setClipping(False)
+        finally:
+            painter.end()
 
 
 class PreviewView(QWidget):
@@ -130,7 +133,7 @@ class PreviewView(QWidget):
 
         panel_layout.addStretch(1)
 
-        self.export_button = QPushButton("Export")
+        self.export_button = QPushButton("Export to Downloads")
         self.export_button.setObjectName("primaryButton")
         self.back_button = QPushButton("Back to crop")
         self.export_button.clicked.connect(self.exportRequested.emit)
@@ -189,4 +192,3 @@ class PreviewView(QWidget):
 
     def set_preview_image(self, image: QImage | None) -> None:
         self.preview_widget.set_preview_image(image)
-

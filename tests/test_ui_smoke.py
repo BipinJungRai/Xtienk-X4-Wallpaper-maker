@@ -32,6 +32,8 @@ def test_stage_flow_and_clear_session(qtbot, tmp_path: Path) -> None:
     window._fit_crop()
     qtbot.mouseClick(window.crop_view.continue_button, PySide6.QtCore.Qt.MouseButton.LeftButton)
     qtbot.waitUntil(lambda: window.stack.currentIndex() == 2)
+    window.preview_view.preview_widget.repaint()
+    qtbot.wait(50)
 
     qtbot.mouseClick(window.clear_button, PySide6.QtCore.Qt.MouseButton.LeftButton)
     qtbot.waitUntil(lambda: window.stack.currentIndex() == 0)

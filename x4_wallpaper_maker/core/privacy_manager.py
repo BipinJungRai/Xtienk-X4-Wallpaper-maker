@@ -66,6 +66,7 @@ class PrivacyManager:
 
         best_effort_release_qt_image(state.current_preview_image)
         state.current_preview_image = None
+        state.source_image_stem = None
         state.confirmed_crop_box = None
         state.export_draft = None
         state.import_notice = None
@@ -90,4 +91,3 @@ class PrivacyManager:
     @property
     def secure_temp_file(self):
         return secure_temp_file
-

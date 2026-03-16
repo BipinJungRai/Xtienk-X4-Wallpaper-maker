@@ -12,19 +12,37 @@ This app is designed to minimize residual traces by default: local-only processi
 - PySide6
 - Pillow
 
-## Run
+## Quick start
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .[dev]
-x4-wallpaper-maker
+./run-app.sh
+```
+
+The script handles first-run setup for you:
+
+- picks Python 3.12
+- creates or repairs `.venv`
+- installs the app into that venv
+- launches `x4-wallpaper-maker`
+
+## Manual install
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/x4-wallpaper-maker
+```
+
+If you want the test tools too:
+
+```bash
+.venv/bin/python -m pip install -e '.[dev]'
 ```
 
 ## Test
 
 ```bash
-pytest
+.venv/bin/python -m pytest
 ```
 
 ## Features
@@ -34,4 +52,3 @@ pytest
 - Preview in `Standard`, `Dithered`, and `Mono` modes
 - Export as `sleep.bmp`, into `/.sleep`, into `/sleep`, or as a custom `.bmp`
 - No telemetry, no network calls, no recent-file persistence, and no temp preview images
-

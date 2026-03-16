@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
 
+from x4_wallpaper_maker.core.image_loader import SourceImageLoadError
 from x4_wallpaper_maker.core.session_manager import SessionManager
 from x4_wallpaper_maker.core.privacy_manager import PrivacyManager
 from x4_wallpaper_maker.models.app_state import AppStage, ExportMode, ExportRequest, PreviewSettings
@@ -18,6 +19,7 @@ from x4_wallpaper_maker.utils.constants import (
     PALETTE,
     PREVIEW_DEBOUNCE_MS,
     SUPPORTED_INPUT_EXTENSIONS,
+    SUPPORTED_INPUT_NAME_FILTER,
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
 )
@@ -195,8 +197,7 @@ class MainWindow(QMainWindow):
         )
 
     def _select_import_image(self) -> None:
-        name_filter = "Images (*.jpg *.jpeg *.png *.webp *.bmp)"
-        selected = select_import_file(self, "Select Image", name_filter)
+        selected = select_import_file(self, "Select Image", SUPPORTED_INPUT_NAME_FILTER)
         if selected is not None:
             self._import_image(str(selected))
 
@@ -206,6 +207,10 @@ class MainWindow(QMainWindow):
             return
         try:
             state = self.session.import_source(path)
+        except SourceImageLoadError as exc:
+            self.privacy_manager.logger.error("event=import status=failed code=import_error")
+            self._show_generic_error(str(exc))
+            return
         except Exception:
             self.privacy_manager.logger.error("event=import status=failed code=import_error")
             self._show_generic_error("Could not open that image.")

@@ -11,7 +11,8 @@ OUTPUT_SIZE = (OUTPUT_WIDTH, OUTPUT_HEIGHT)
 OUTPUT_ASPECT_WIDTH = 3
 OUTPUT_ASPECT_HEIGHT = 5
 
-SUPPORTED_INPUT_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
+SUPPORTED_INPUT_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".heic", ".heif"}
+SUPPORTED_INPUT_NAME_FILTER = "Images (*.jpg *.jpeg *.png *.webp *.bmp *.heic *.heif)"
 DEFAULT_EXPORT_FILENAME = "x4-wallpaper.bmp"
 ROOT_SLEEP_FILENAME = "sleep.bmp"
 DOT_SLEEP_DIRECTORY = ".sleep"
@@ -55,4 +56,3 @@ PALETTE = {
 }
 
 VOLUMES_ROOT = Path("/Volumes")
-

@@ -11,6 +11,7 @@ This app is designed to minimize residual traces by default: local-only processi
 - Python 3.12
 - PySide6
 - Pillow
+- pillow-heif
 
 ## Quick start
 
@@ -47,7 +48,7 @@ If you want the test tools too:
 
 ## Features
 
-- Import `jpg`, `jpeg`, `png`, `webp`, and `bmp`
+- Import `jpg`, `jpeg`, `png`, `webp`, `bmp`, `heic`, and `heif`
 - Fixed 3:5 portrait crop composition
 - Preview in `Standard`, `Dithered`, and `Mono` modes
 - Export as `sleep.bmp`, into `/.sleep`, into `/sleep`, or as a custom `.bmp`

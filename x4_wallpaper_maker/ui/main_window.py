@@ -100,6 +100,8 @@ class MainWindow(QMainWindow):
 
         self.crop_view.fitRequested.connect(self._fit_crop)
         self.crop_view.resetRequested.connect(self._reset_crop)
+        self.crop_view.rotateLeftRequested.connect(self._rotate_left)
+        self.crop_view.rotateRightRequested.connect(self._rotate_right)
         self.crop_view.zoomChanged.connect(self._update_crop_zoom)
         self.crop_view.draftEdited.connect(self._sync_crop_draft)
         self.crop_view.continueRequested.connect(self._continue_to_preview)
@@ -235,6 +237,23 @@ class MainWindow(QMainWindow):
             return
         draft = self.session.reset_crop(self.crop_view.canvas_size())
         self.crop_view.set_draft_state(draft)
+
+    def _rotate_left(self) -> None:
+        self._rotate_crop_image(clockwise=False)
+
+    def _rotate_right(self) -> None:
+        self._rotate_crop_image(clockwise=True)
+
+    def _rotate_crop_image(self, *, clockwise: bool) -> None:
+        if self.session.state.display_image_rgb is None:
+            return
+        try:
+            state = self.session.rotate_source(clockwise=clockwise)
+        except Exception:
+            self.privacy_manager.logger.error("event=rotate status=failed code=rotate_error")
+            self._show_generic_error("Could not rotate that image.")
+            return
+        self.crop_view.set_display_image(state.display_image_rgb, state.import_notice)
 
     def _update_crop_zoom(self, zoom_value: int) -> None:
         if self.session.state.display_image_rgb is None:

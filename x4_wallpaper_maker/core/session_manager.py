@@ -59,6 +59,21 @@ class SessionManager:
     def reset_crop(self, canvas_size: tuple[int, int]) -> CropDraftState:
         return self.fit_crop(canvas_size)
 
+    def rotate_source(self, *, clockwise: bool) -> SessionState:
+        if self.state.source_image_rgb is None or self.state.display_image_rgb is None:
+            raise ValueError("No image loaded.")
+
+        transform = Image.Transpose.ROTATE_270 if clockwise else Image.Transpose.ROTATE_90
+        self.state.source_image_rgb = self.state.source_image_rgb.transpose(transform)
+        self.state.display_image_rgb = self.state.display_image_rgb.transpose(transform)
+        self.state.crop_draft = CropDraftState()
+        self.state.confirmed_crop_box = None
+        self.state.prepared_base_480x800_rgb = None
+        self.state.current_preview_image = None
+        self.state.stage = AppStage.CROP
+        self.state.render_revision += 1
+        return self.state
+
     def update_crop_draft(
         self,
         *,

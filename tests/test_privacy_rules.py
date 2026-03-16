@@ -100,3 +100,24 @@ def test_clear_session_resets_state() -> None:
     assert stateful_session.state.source_image_rgb is None
     assert stateful_session.state.display_image_rgb is None
     assert stateful_session.state.prepared_base_480x800_rgb is None
+
+
+def test_rotate_source_turns_images_and_invalidates_prepared_preview(tmp_path: Path) -> None:
+    source_path = tmp_path / "rotate-me.png"
+    Image.new("RGB", (800, 1200), color="navy").save(source_path, format="PNG")
+
+    session = SessionManager(PrivacyManager())
+    session.privacy_manager.configure_logging()
+    session.import_source(source_path)
+    session.fit_crop((800, 900))
+    session.confirm_crop((800, 900))
+
+    state = session.rotate_source(clockwise=True)
+
+    assert state.source_image_rgb.size == (1200, 800)
+    assert state.display_image_rgb.size == (1200, 800)
+    assert state.stage == AppStage.CROP
+    assert state.prepared_base_480x800_rgb is None
+    assert state.current_preview_image is None
+    assert state.confirmed_crop_box is None
+    assert state.crop_draft.scale == 1.0

@@ -37,3 +37,21 @@ def test_stage_flow_and_clear_session(qtbot, tmp_path: Path) -> None:
 
     qtbot.mouseClick(window.clear_button, PySide6.QtCore.Qt.MouseButton.LeftButton)
     qtbot.waitUntil(lambda: window.stack.currentIndex() == 0)
+
+
+def test_rotate_buttons_update_crop_source_orientation(qtbot, tmp_path: Path) -> None:
+    source_path = tmp_path / "ui-rotate-source.png"
+    Image.new("RGB", (900, 1400), color="teal").save(source_path, format="PNG")
+
+    manager = PrivacyManager()
+    manager.configure_logging()
+    window = MainWindow(privacy_manager=manager)
+    qtbot.addWidget(window)
+    window.show()
+
+    window._import_image(str(source_path))
+    qtbot.waitUntil(lambda: window.stack.currentIndex() == 1)
+    qtbot.waitUntil(lambda: window.session.state.display_image_rgb is not None)
+
+    qtbot.mouseClick(window.crop_view.rotate_right_button, PySide6.QtCore.Qt.MouseButton.LeftButton)
+    qtbot.waitUntil(lambda: window.session.state.display_image_rgb.size == (1400, 900))

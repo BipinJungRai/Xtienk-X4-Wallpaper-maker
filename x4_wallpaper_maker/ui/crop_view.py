@@ -141,6 +141,8 @@ class CropView(QWidget):
     resetRequested = Signal()
     continueRequested = Signal()
     backRequested = Signal()
+    rotateLeftRequested = Signal()
+    rotateRightRequested = Signal()
     zoomChanged = Signal(int)
     draftEdited = Signal(object)
 
@@ -184,17 +186,23 @@ class CropView(QWidget):
 
         self.reset_button = QPushButton("Reset")
         self.fit_button = QPushButton("Fit")
+        self.rotate_left_button = QPushButton("Rotate Left")
+        self.rotate_right_button = QPushButton("Rotate Right")
         self.continue_button = QPushButton("Continue")
         self.continue_button.setObjectName("primaryButton")
         self.back_button = QPushButton("Back")
 
         self.reset_button.clicked.connect(self.resetRequested.emit)
         self.fit_button.clicked.connect(self.fitRequested.emit)
+        self.rotate_left_button.clicked.connect(self.rotateLeftRequested.emit)
+        self.rotate_right_button.clicked.connect(self.rotateRightRequested.emit)
         self.continue_button.clicked.connect(self.continueRequested.emit)
         self.back_button.clicked.connect(self.backRequested.emit)
 
         panel_layout.addWidget(self.reset_button)
         panel_layout.addWidget(self.fit_button)
+        panel_layout.addWidget(self.rotate_left_button)
+        panel_layout.addWidget(self.rotate_right_button)
         panel_layout.addWidget(QLabel("Output: 480 × 800"))
         panel_layout.addStretch(1)
         panel_layout.addWidget(self.continue_button)

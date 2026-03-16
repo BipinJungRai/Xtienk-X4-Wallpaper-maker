@@ -1,0 +1,49 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Packaging and build artifacts
+build/
+dist/
+site/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+.tox/
+.nox/
+
+# Type checker / linter caches
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# Local environment and secrets
+.env
+.env.*
+*.local
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS filesystem noise
+.DS_Store
+.AppleDouble
+.LSOverride
